@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { client } from './utils/API';
 import { useComponentDidMount } from './hooks/useComponentDidMount';
-import { Flex, Box, Image } from '@chakra-ui/core';
+import { Flex, Box, Image, SimpleGrid } from '@chakra-ui/core';
 
 function App() {
   function* gen(arr) {
@@ -22,7 +22,7 @@ function App() {
     async function getTrending() {
       try {
         const { data } = await client(
-          `trending?api_key=${process.env.REACT_APP_API_KEY}`
+          `trending?limit=10&api_key=${process.env.REACT_APP_API_KEY}`
         );
 
         setGifs(data);
@@ -48,7 +48,7 @@ function App() {
         setSelected(next);
         console.log(selected);
       } else {
-        setSelected('The End');
+        setSelected(gifs);
       }
     }
 
@@ -60,12 +60,24 @@ function App() {
   return (
     <main>
       <Flex height="100vh" align="center" justify="center">
-        {selected ? (
+        {selected && selected instanceof Array === false ? (
           <Box bg="tomato" w="50%" p={4} color="white">
             <Flex justify="center">
               <Image src={selected.images.fixed_height.url} />
             </Flex>
           </Box>
+        ) : selected && selected instanceof Array === true ? (
+          <SimpleGrid columns={4} spacing={10}>
+            {selected.map((gif) => {
+              return (
+                <Box key={gif.id} bg="tomato" w="50%" p={4} color="white">
+                  <Flex justify="center">
+                    <Image src={gif.images.fixed_height.url} />
+                  </Flex>
+                </Box>
+              );
+            })}
+          </SimpleGrid>
         ) : (
           <h2>Hi!</h2>
         )}
