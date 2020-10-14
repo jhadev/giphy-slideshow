@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { client } from './utils/API';
 import { useComponentDidMount } from './hooks/useComponentDidMount';
-import { Flex, Box, Image, SimpleGrid } from '@chakra-ui/core';
+import { Flex, Box, Image } from '@chakra-ui/core';
 
 function App() {
   function* gen(arr) {
@@ -57,27 +57,44 @@ function App() {
     }
   }, [selected, genned]);
 
+  function isArray(prop) {
+    return prop instanceof Array;
+  }
+
   return (
-    <main>
-      <Flex height="100vh" align="center" justify="center">
-        {selected && selected instanceof Array === false ? (
-          <Box bg="tomato" w="50%" p={4} color="white">
+    <main className="container">
+      <Flex
+        h={isArray(selected) ? '100%' : '100vh'}
+        align="center"
+        justify="center">
+        {selected && !isArray(selected) ? (
+          <Box
+            bg="tomato"
+            w={`${selected.images.fixed_height.width}px`}
+            p={4}
+            color="white">
             <Flex justify="center">
               <Image src={selected.images.fixed_height.url} />
             </Flex>
           </Box>
-        ) : selected && selected instanceof Array === true ? (
-          <SimpleGrid columns={4} spacing={10}>
+        ) : selected && isArray(selected) ? (
+          <Flex direction="row" wrap="wrap" justify="space-between">
             {selected.map((gif) => {
               return (
-                <Box key={gif.id} bg="tomato" w="50%" p={4} color="white">
+                <Box
+                  key={gif.id}
+                  bg="tomato"
+                  w={`${gif.images.fixed_height.width}px`}
+                  p={4}
+                  m={2}
+                  color="white">
                   <Flex justify="center">
                     <Image src={gif.images.fixed_height.url} />
                   </Flex>
                 </Box>
               );
             })}
-          </SimpleGrid>
+          </Flex>
         ) : (
           <h2>Hi!</h2>
         )}
