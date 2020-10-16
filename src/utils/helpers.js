@@ -14,3 +14,11 @@ export function delay(ms) {
 export function* gen(arr) {
   yield* arr;
 }
+
+export function resize(itemWidth) {
+  if (parseInt(itemWidth) > window.innerWidth) {
+    return '100%';
+  }
+
+  return `${itemWidth}px`;
+}

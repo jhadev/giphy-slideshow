@@ -10,7 +10,7 @@ import {
   Link,
 } from '@chakra-ui/core';
 import { client } from './utils/API';
-import { gen, delay, isArray } from './utils/helpers';
+import { gen, delay, isArray, resize } from './utils/helpers';
 import { useComponentDidMount } from './hooks/useComponentDidMount';
 import ColorMode from './components/ColorMode';
 
@@ -78,7 +78,7 @@ function App() {
             <Stack spacing={4}>
               <Box
                 bg="pink.200"
-                w={`${selected.images.fixed_height.width}px`}
+                w={resize(selected.images.fixed_height.width)}
                 p={4}
                 color="white">
                 <Flex justify="center">
@@ -96,13 +96,13 @@ function App() {
               </Flex>
             </Stack>
           ) : selected && isArray(selected) ? (
-            <Flex direction="row" wrap="wrap" justify="space-between">
+            <Flex m={2} direction="row" wrap="wrap" justify="center">
               {selected.map((gif) => {
                 return (
                   <Box
                     key={gif.id}
                     bg="pink.200"
-                    w={`${gif.images.fixed_height.width}px`}
+                    w={resize(gif.images.fixed_height.width)}
                     p={4}
                     m={2}
                     color="white">
