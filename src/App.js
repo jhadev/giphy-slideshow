@@ -18,7 +18,7 @@ function App() {
   const [gifs, setGifs] = useState([]);
   const [selected, setSelected] = useState(null);
   const [genned, setGenned] = useState(null);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(true);
 
   const isMounted = useComponentDidMount();
 
@@ -30,7 +30,6 @@ function App() {
 
       setGifs(data);
       setGenned(gen(data));
-      console.log(genned);
     } catch (err) {
       console.log(err);
     }
@@ -42,10 +41,7 @@ function App() {
 
   useEffect(() => {
     const { promise, timeOutId } = delay(3000);
-    async function stepThrough() {
-      console.log(timeOutId);
-      // setId(timeOutId);
-
+    function stepThrough() {
       const next = genned.next().value;
 
       console.log(next);
@@ -79,32 +75,33 @@ function App() {
           align="center"
           justify="center">
           {selected && !isArray(selected) ? (
-            <Box
-              bg="tomato"
-              w={`${selected.images.fixed_height.width}px`}
-              p={4}
-              color="white">
-              <Flex justify="center">
-                <Stack spacing={2}>
+            <Stack spacing={4}>
+              <Box
+                bg="pink.200"
+                w={`${selected.images.fixed_height.width}px`}
+                p={4}
+                color="white">
+                <Flex justify="center">
                   <Image src={selected.images.fixed_height.url} />
-                  <Button
-                    onClick={() => {
-                      setPaused(!paused);
-                    }}
-                    size="lg"
-                    variantColor="teal">
-                    {paused ? 'Resume' : 'Pause'}
-                  </Button>
-                </Stack>
+                </Flex>
+              </Box>
+              <Flex justify="center">
+                <Button
+                  onClick={() => setPaused((paused) => !paused)}
+                  size="lg"
+                  variant="outline"
+                  variantColor="teal">
+                  {paused ? 'Resume' : 'Pause'}
+                </Button>
               </Flex>
-            </Box>
+            </Stack>
           ) : selected && isArray(selected) ? (
             <Flex direction="row" wrap="wrap" justify="space-between">
               {selected.map((gif) => {
                 return (
                   <Box
                     key={gif.id}
-                    bg="tomato"
+                    bg="pink.200"
                     w={`${gif.images.fixed_height.width}px`}
                     p={4}
                     m={2}
@@ -117,12 +114,26 @@ function App() {
               })}
             </Flex>
           ) : (
-            <Text fontSize="4xl">
-              Trending Gifs on{' '}
-              <Link color="teal.500" isExternal href="https://giphy.com">
-                Giphy
-              </Link>
-            </Text>
+            <Stack spacing={10}>
+              <Text fontSize="5xl">
+                Trending Gifs on{' '}
+                <Link
+                  color={paused ? 'teal.500' : 'pink.500'}
+                  isExternal
+                  href="https://giphy.com">
+                  Giphy
+                </Link>
+              </Text>
+              <Button
+                onClick={() => setPaused((paused) => !paused)}
+                size="lg"
+                marginX="auto"
+                w="50%"
+                variant={paused ? 'solid' : 'outline'}
+                variantColor={paused ? 'teal' : 'pink'}>
+                {paused ? 'Start' : 'Blasting Off!'}
+              </Button>
+            </Stack>
           )}
         </Flex>
       </main>
