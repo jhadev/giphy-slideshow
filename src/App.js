@@ -27,8 +27,15 @@ function App() {
       try {
         const { data } = await client(params);
 
-        setGifs(data);
-        setGenned(gen(data));
+        const withRank = data
+          .map((gifData, index) => {
+            return { ...gifData, rank: index + 1 };
+          })
+          .reverse();
+
+        console.log(withRank);
+        setGifs(withRank);
+        setGenned(gen(withRank));
       } catch (err) {
         console.log(err);
       }
@@ -77,15 +84,34 @@ function App() {
           justify="center">
           {selected && !isArray(selected) ? (
             <Stack spacing={4}>
-              <Box
-                bg="pink.200"
-                w={resize(selected.images.fixed_height.width)}
-                p={4}
-                color="white">
-                <Flex justify="center">
-                  <Image src={selected.images.fixed_height.url} />
-                </Flex>
-              </Box>
+              <Text
+                color="teal.500"
+                fontSize="5xl"
+                fontWeight="bold"
+                textAlign="center">
+                {selected.rank}.
+              </Text>
+
+              <Text
+                color="white"
+                fontSize="2xl"
+                fontWeight="semibold"
+                textAlign="center">
+                {selected.title}
+              </Text>
+              <Flex mt={2} justify="center">
+                <Box
+                  bg="pink.200"
+                  w={resize(selected.images.fixed_height.width)}
+                  p={4}
+                  color="white">
+                  <Flex justify="center">
+                    <Link isExternal href={selected.url}>
+                      <Image mx="auto" src={selected.images.fixed_height.url} />
+                    </Link>
+                  </Flex>
+                </Box>
+              </Flex>
               <Flex justify="center">
                 <Button
                   onClick={() => setPaused((paused) => !paused)}
