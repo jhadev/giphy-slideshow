@@ -22,21 +22,22 @@ function App() {
 
   const isMounted = useComponentDidMount();
 
-  const getTrending = useCallback(async () => {
-    try {
-      const { data } = await client(
-        `trending?limit=10&api_key=${process.env.REACT_APP_API_KEY}`
-      );
+  const getTrending = useCallback(
+    async (params) => {
+      try {
+        const { data } = await client(params);
 
-      setGifs(data);
-      setGenned(gen(data));
-    } catch (err) {
-      console.log(err);
-    }
-  }, [genned]);
+        setGifs(data);
+        setGenned(gen(data));
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [genned]
+  );
 
   useEffect(() => {
-    getTrending();
+    getTrending(`trending?limit=10&api_key=${process.env.REACT_APP_API_KEY}`);
   }, []);
 
   useEffect(() => {
