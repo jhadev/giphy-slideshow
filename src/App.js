@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  CSSReset,
-  Flex,
-  Box,
-  Image,
-  Button,
-  Stack,
-  Text,
-  Link,
-} from '@chakra-ui/core';
+import React, { useState, useEffect, useCallback, Fragment } from 'react';
+import { CSSReset, Flex, Stack } from '@chakra-ui/core';
 import { client } from './utils/API';
 import { gen, delay, isArray, resize } from './utils/helpers';
 import { useComponentDidMount } from './hooks/useComponentDidMount';
 import ColorMode from './components/ColorMode';
+import ImageLayout from './components/ImageLayout';
+import ImageContainer from './components/ImageContainer';
+import Start from './components/Start';
 
 function App() {
   const [gifs, setGifs] = useState([]);
@@ -76,7 +70,6 @@ function App() {
   return (
     <ColorMode>
       <CSSReset />
-
       <main className="container">
         <Flex
           h={isArray(selected) ? '100%' : '100vh'}
@@ -84,82 +77,26 @@ function App() {
           justify="center">
           {selected && !isArray(selected) ? (
             <Stack spacing={4}>
-              <Text
-                color="teal.500"
-                fontSize="5xl"
-                fontWeight="bold"
-                textAlign="center">
-                {selected.rank}.
-              </Text>
-
-              <Text
-                color="white"
-                fontSize="2xl"
-                fontWeight="semibold"
-                textAlign="center">
-                {selected.title}
-              </Text>
-              <Flex mt={2} justify="center">
-                <Box
-                  bg="pink.200"
-                  w={resize(selected.images.fixed_height.width)}
-                  p={4}
-                  color="white">
-                  <Flex justify="center">
-                    <Link isExternal href={selected.url}>
-                      <Image mx="auto" src={selected.images.fixed_height.url} />
-                    </Link>
-                  </Flex>
-                </Box>
-              </Flex>
-              <Flex justify="center">
-                <Button
-                  onClick={() => setPaused((paused) => !paused)}
-                  size="lg"
-                  variant="outline"
-                  variantColor="teal">
-                  {paused ? 'Resume' : 'Pause'}
-                </Button>
-              </Flex>
+              <ImageLayout
+                selected={selected}
+                paused={paused}
+                setPaused={setPaused}
+                resize={resize}
+              />
             </Stack>
           ) : selected && isArray(selected) ? (
             <Flex m={2} direction="row" wrap="wrap" justify="center">
               {selected.map((gif) => {
                 return (
-                  <Box
-                    key={gif.id}
-                    bg="pink.200"
-                    w={resize(gif.images.fixed_height.width)}
-                    p={4}
-                    m={2}
-                    color="white">
-                    <Flex justify="center">
-                      <Image src={gif.images.fixed_height.url} />
-                    </Flex>
-                  </Box>
+                  <Fragment key={gif.id}>
+                    <ImageContainer gif={gif} resize={resize} />
+                  </Fragment>
                 );
               })}
             </Flex>
           ) : (
             <Stack spacing={10}>
-              <Text fontSize="5xl">
-                Trending Gifs on{' '}
-                <Link
-                  color={paused ? 'teal.500' : 'pink.500'}
-                  isExternal
-                  href="https://giphy.com">
-                  Giphy
-                </Link>
-              </Text>
-              <Button
-                onClick={() => setPaused((paused) => !paused)}
-                size="lg"
-                marginX="auto"
-                w="50%"
-                variant={paused ? 'solid' : 'outline'}
-                variantColor={paused ? 'teal' : 'pink'}>
-                {paused ? 'Start' : 'Blasting Off!'}
-              </Button>
+              <Start paused={paused} setPaused={setPaused} />
             </Stack>
           )}
         </Flex>
